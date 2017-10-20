@@ -1,0 +1,125 @@
+function pad(num, size) {
+  var s = num+"";
+  while (s.length < size) s = "0" + s;
+  return s;
+}
+
+$(document).ready(function () {
+  $('[data-fill]').click(function (e) {
+    e.preventDefault()
+    $($(this).data('fill')).val($(this).data('fill-text')).trigger('input')
+  });
+
+  $('#copy-ref-url').click(function () {
+    $('#copy-ref-url').text('Copied!');
+    copyToClipboard(document.getElementById('ref_url'));
+    setTimeout(function () {
+      $('#copy-ref-url').text('Copy')
+    }, 1000)
+  })
+
+  $('#copy-btc-address').click(function () {
+    $('#copy-btc-address').text('Copied!');
+    copyToClipboard(document.getElementById('btc_address'));
+    setTimeout(function () {
+      $('#copy-btc-address').text('Copy')
+    }, 1000)
+  })
+
+  $('#copy-hxt-address').click(function () {
+    $('#copy-hxt-address').text('Copied!');
+    copyToClipboard(document.getElementById('hxt_address'));
+    setTimeout(function () {
+      $('#copy-hxt-address').text('Copy')
+    }, 1000)
+  })
+
+  function copyToClipboard(elem) {
+    // create hidden text element, if it doesn't already exist
+    var targetId = "_hiddenCopyText_";
+    var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+    var origSelectionStart, origSelectionEnd;
+    if (isInput) {
+      // can just use the original source element for the selection and copy
+      target = elem;
+      origSelectionStart = elem.selectionStart;
+      origSelectionEnd = elem.selectionEnd;
+    } else {
+      // must use a temporary form element for the selection and copy
+      target = document.getElementById(targetId);
+      if (!target) {
+        var target = document.createElement("textarea");
+        target.style.position = "absolute";
+        target.style.left = "-9999px";
+        target.style.top = "0";
+        target.id = targetId;
+        document.body.appendChild(target);
+      }
+      target.textContent = elem.textContent;
+    }
+    // select the content
+    var currentFocus = document.activeElement;
+    target.focus();
+    target.setSelectionRange(0, target.value.length);
+
+    // copy the selection
+    var succeed;
+    try {
+      succeed = document.execCommand("copy");
+    } catch(e) {
+      succeed = false;
+    }
+    // restore original focus
+    if (currentFocus && typeof currentFocus.focus === "function") {
+      currentFocus.focus();
+    }
+
+    if (isInput) {
+      // restore prior selection
+      elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+    } else {
+      // clear temporary content
+      target.textContent = "";
+    }
+    return succeed;
+  }
+
+  $('#hxt_amount').on('input', function () {
+    fillInputs($(this).val())
+  })
+
+  function fillInputs(hxt_amount) {
+    if (typeof hxt_to_btc === 'undefined') {
+      return;
+    }
+
+    $('#btc_amount').val((hxt_amount * hxt_to_btc).toFixed(8));
+    $('#total_usd').text((hxt_amount * hxt_to_usd).toFixed(2))
+    $('#pay_btc').text((hxt_amount * hxt_to_btc).toFixed(8))
+    $('#receive_hxt').text(hxt_amount)
+  }
+
+  fillInputs($('#hxt_amount').val())
+
+  $('#ico-form').on('submit', function (e) {
+    if (!$('#agree').prop('checked')) {
+      alert('Please accept an agreement.');
+      $('#ico-form [type=submit]').prop('disabled', false)
+      e.preventDefault()
+      return false
+    }
+  });
+
+  var number = document.getElementById('hxt_amount');
+
+  // Listen for input event on numInput.
+  if (number !== null) {
+    number.onkeydown = function(e) {
+      if(!((e.keyCode > 95 && e.keyCode < 106)
+          || (e.keyCode > 47 && e.keyCode < 58)
+          || e.keyCode == 8)) {
+        return false;
+      }
+    }
+  }
+})
