@@ -8,7 +8,7 @@ router.get('/', function(req, res, next){
 
 router.get('/capcha', function(req, res, next){
     var decaptcher = new Decaptcher("nhantruong", "32541234");
-    decaptcher.postPicture(req.query.url, null, function(err, result){
+    decaptcher.postPicture(req.query.url, "image/png", function(err, result){
         res.send(result.Text);
     });
 });
