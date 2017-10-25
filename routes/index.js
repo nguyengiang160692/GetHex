@@ -3,8 +3,7 @@ var Decaptcher = require("de-captcher").decaptcher;
 var Tesseract  = require('tesseract.js')
 var request    = require('request')
 var fs         = require('fs')
-var path       = require('path');
-global.appRoot = path.resolve(__dirname);
+
 var router     = express.Router();
 var decaptcher = new Decaptcher("nhantruong", "32541234");
 /* GET home page. */
@@ -17,12 +16,12 @@ router.get('/capcha', function(req, res, next){
     });
 });
 router.get('/capcha2', function(req, res, next){
-    var filename        = Date.now() + '.png';
-    var writeFileStream = fs.createWriteStream(`${appRoot}/images/${filename}`);
+    var file_path       = `${global.appRoot}/images/${Date.now() + '.png'}`;
+    var writeFileStream = fs.createWriteStream(file_path);
     request(req.query.url)
         .pipe(writeFileStream)
         .on('close', function(){
-            Tesseract.recognize(filename)
+            Tesseract.recognize(file_path)
                 .then(function(result){
                     res.send(result.text);
                 })
