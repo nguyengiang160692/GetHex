@@ -8,6 +8,8 @@ function getLastInputWithTypeInZone(_inputs, _type){
     }
     return last;
 }
+
+var api_key        = "PDMXB4543888A";
 var forms          = document.getElementById('ico-form');
 var inputs         = forms
     .querySelectorAll("input, select, checkbox, textarea");
@@ -19,23 +21,19 @@ capcha_input.value = '';
 
 forms.addEventListener('submit', function(){
     //window.open(window.location.href, '_blank');
-    alert('Đã submit rùi chờ may mắn thôi !');
 });
-var timeout    = 1000;
-var time_count = 0;
+
 setInterval(function(){
-    if(time_count < timeout){
-        input_amount.click();
-        capcha_input.focus();
-        time_count += 100;
-    }
+    input_amount.click();
+    capcha_input.focus();
 }, 100);
 
 var xhr = new XMLHttpRequest();
+//xhr.open("GET", "https://apipro1.ocr.space/parse/imageurl?apikey=" + api_key + "&url=" + encodeURI(imgs[0].currentSrc), true);
 xhr.open("GET", "http://188.166.246.121:8080/capcha2?url=" + encodeURI(imgs[0].currentSrc), true);
 xhr.onreadystatechange = function(){
     if(xhr.readyState == 4 && xhr.status == 200 && capcha_input.value == ''){
-        var capcha         = xhr.responseText.trim();
+        var capcha         = JSON.parse(xhr.responseText).ParsedResults[0].ParsedText.trim();
         capcha_input.value = capcha;
     }
 };
