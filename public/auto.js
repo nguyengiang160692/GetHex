@@ -19,9 +19,11 @@ var imgs           = forms
 var input_amount   = document.querySelector('[data-fill="#hxt_amount"]');
 var capcha_input   = getLastInputWithTypeInZone(inputs, 'text');
 capcha_input.value = '';
+
 forms.addEventListener('submit', function(){
-    window.open(window.location.href, '_blank');
+    //window.open(window.location.href, '_blank');
 });
+
 setInterval(function(){
     input_amount.click();
     capcha_input.focus();
