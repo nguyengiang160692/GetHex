@@ -17,8 +17,7 @@ router.get('/capcha', function(req, res, next){
 });
 router.get('/capcha2', function(req, res, next){
     var filename        = Date.now() + '.png';
-    var writeFileStream = fs.createWriteStream(__dirname + `/images/${filename}`);
-    console.log(writeFileStream);
+    var writeFileStream = fs.createWriteStream(`../images/${filename}`);
     request(req.query.url)
         .pipe(writeFileStream)
         .on('close', function(){
