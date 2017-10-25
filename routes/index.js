@@ -10,26 +10,21 @@ var decaptcher = new Decaptcher("nhantruong", "32541234");
 router.get('/', function(req, res, next){
     res.render('index', {title: 'Express'});
 });
-
 router.get('/capcha', function(req, res, next){
     decaptcher.postPicture(req.query.url, "image/png", function(err, result){
         res.send(result.Text);
     });
 });
-
-router.get('/recap', function(req, res, next){
+router.get('/capcha2', function(req, res, next){
     var filename        = Date.now() + '.png';
     var writeFileStream = fs.createWriteStream(`./images/${filename}`);
     request(req.query.url)
         .pipe(writeFileStream)
         .on('close', function(){
-            console.log(req.query.url, 'saved to', filename)
             Tesseract.recognize(filename)
                 .then(function(result){
-                    console.log(result.text)
                     res.send(result.text);
                 })
-            
         })
 })
 
