@@ -7,14 +7,15 @@
   },
   "dependencies": {
     "body-parser": "~1.17.1",
+    "cloudscraper": "^1.4.1",
     "cookie-parser": "~1.4.3",
     "de-captcher": "^0.1.14",
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
     "morgan": "~1.8.1",
+    "request": "latest",
     "serve-favicon": "~2.4.2",
-    "tesseract.js": "^1.0.10",
-    "request": "latest"
+    "tesseract.js": "^1.0.10"
   }
 }
