@@ -11,33 +11,46 @@ function getLastInputWithTypeInZone(_inputs, _type){
 var forms          = document.getElementById('ico-form');
 var inputs         = forms
     .querySelectorAll("input, select, checkbox, textarea");
-var imgs           = forms
-    .querySelectorAll("img");
 var input_amount   = document.querySelector('[data-fill="#hxt_amount"]');
 var capcha_input   = getLastInputWithTypeInZone(inputs, 'text');
+var current_btc    = document.getElementById('btc_amount');
 capcha_input.value = '';
+var submited       = false;
+var oldBTC         = readStorage('btc_amount');
+var haveOldCapcha  = readStorage('store_capcha', capcha_input);
 
-forms.addEventListener('submit', function(){
-    //window.open(window.location.href, '_blank');
-    alert('Đã submit rùi chờ may mắn thôi !');
-});
-var timeout    = 1000;
-var time_count = 0;
+function saveToStorage(name, value){
+    if(typeof(localStorage) !== "undefined"){
+        localStorage.setItem(name, value);
+    }
+}
+function readStorage(name, ele){
+    var value = localStorage.getItem(name);
+    if(typeof(localStorage) !== "undefined")
+        if(ele && oldBTC == current_btc.value) ele.value = value;
+    return value;
+}
+function handleSubmit(haveOldCap){
+    if(!submited){
+        submited = true;
+        forms.submit();
+        if(haveOldCap != true) window.open(window.location.href, '_blank');
+    }
+}
+
 setInterval(function(){
-    if(time_count < timeout){
-        input_amount.click();
-        capcha_input.focus();
-        time_count += 100;
+    input_amount.click();
+    capcha_input.focus();
+    if(haveOldCapcha != ''){
+        localStorage.setItem('store_capcha', '');
+        handleSubmit(true);
+        return;
     }
-}, 100);
-
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "http://188.166.246.121:8080/capcha2?url=" + encodeURI(imgs[0].currentSrc), true);
-xhr.onreadystatechange = function(){
-    if(xhr.readyState == 4 && xhr.status == 200 && capcha_input.value == ''){
-        var capcha         = xhr.responseText.trim();
-        capcha_input.value = capcha;
+    if(capcha_input.value.length == 4){
+        saveToStorage('store_capcha', capcha_input.value);
+        saveToStorage('btc_amount', current_btc.value);
+        handleSubmit();
+        return;
     }
-};
-xhr.send();
+}, 400);
 
